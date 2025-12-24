@@ -32,7 +32,7 @@ class AdminDashboardController extends Controller
             'active_loans' => Loan::where('status', 'active')->count(),
             'total_savings' => Saving::count(),
             'total_transactions' => Transaction::count(),
-            'loan_amount_total' => Loan::sum('amount') ?? 0,
+            'loan_amount_total' => Loan::sum('principal_amount') ?? 0,
             'savings_amount_total' => Saving::sum('balance') ?? 0,
         ];
 
