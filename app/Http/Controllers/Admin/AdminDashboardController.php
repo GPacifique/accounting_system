@@ -33,7 +33,7 @@ class AdminDashboardController extends Controller
             'total_savings' => Saving::count(),
             'total_transactions' => Transaction::count(),
             'loan_amount_total' => Loan::sum('principal_amount') ?? 0,
-            'savings_amount_total' => Saving::sum('balance') ?? 0,
+            'savings_amount_total' => Saving::sum('current_balance') ?? 0,
         ];
 
         $recent_users = User::latest()->take(5)->get();
