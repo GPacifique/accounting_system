@@ -20,14 +20,15 @@ class MemberDashboardController extends Controller
         // Get user's groups
         $groups = $user->groups()->where('groups.status', 'active')->get();
 
-        // Get user's loans (only their own)
-        $loans = Loan::where('user_id', $user->id)
+        // Get user's loans through group members
+        $userMembers = $user->groupMembers()->pluck('id');
+        $loans = Loan::whereIn('member_id', $userMembers)
             ->with('group')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Get user's savings (only their own)
-        $savings = Saving::where('user_id', $user->id)
+        // Get user's savings through group members
+        $savings = Saving::whereIn('member_id', $userMembers)
             ->with('group')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -62,7 +63,8 @@ class MemberDashboardController extends Controller
     {
         $user = Auth::user();
 
-        $loans = Loan::where('user_id', $user->id)
+        $userMembers = $user->groupMembers()->pluck('id');
+        $loans = Loan::whereIn('member_id', $userMembers)
             ->with('group')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -85,7 +87,8 @@ class MemberDashboardController extends Controller
     {
         $user = Auth::user();
 
-        $savings = Saving::where('user_id', $user->id)
+        $userMembers = $user->groupMembers()->pluck('id');
+        $savings = Saving::whereIn('member_id', $userMembers)
             ->with('group')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
