@@ -1,0 +1,313 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Group;
+use App\Models\GroupMember;
+use App\Models\Loan;
+use App\Models\Saving;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
+
+class GroupAdminDashboardController extends Controller
+{
+    /**
+     * Show the group admin dashboard
+     * Only accessible to members with admin role in their group
+     */
+    public function index()
+    {
+        $user = Auth::user();
+
+        // Get the group where user is admin
+        $group = GroupMember::where('user_id', $user->id)
+            ->where('role', 'admin')
+            ->where('status', 'active')
+            ->with('group')
+            ->first()
+            ->group ?? null;
+
+        if (!$group) {
+            return redirect()->route('dashboard')
+                ->with('error', 'You must be a group admin to access this dashboard.');
+        }
+
+        // Get active members with their loan and savings info
+        $members = $group->groupMembers()
+            ->where('status', 'active')
+            ->with(['user', 'loans', 'savings'])
+            ->get();
+
+        // Get group statistics
+        $stats = [
+            'total_members' => $members->count(),
+            'active_loans' => $group->loans()->where('status', 'active')->count(),
+            'total_loans' => $group->loans()->count(),
+            'total_loan_amount' => $group->loans()->sum('principal_amount'),
+            'total_savings_balance' => $group->savings()->sum('balance'),
+            'overdue_loans' => $group->loans()->where('status', 'active')->where('maturity_date', '<', now())->count(),
+            'pending_charges' => $group->loans()->sum(function($loan) {
+                return $loan->pendingCharges()->sum('charge_amount');
+            }),
+        ];
+
+        // Get loans with upcoming deadlines (next 30 days)
+        $upcoming_loans = $group->loans()
+            ->where('status', 'active')
+            ->where('maturity_date', '>', now())
+            ->where('maturity_date', '<=', now()->addDays(30))
+            ->with(['member.user', 'charges'])
+            ->orderBy('maturity_date')
+            ->get();
+
+        // Get overdue loans
+        $overdue_loans = $group->loans()
+            ->where('status', 'active')
+            ->where('maturity_date', '<', now())
+            ->with(['member.user', 'charges'])
+            ->orderBy('maturity_date')
+            ->get();
+
+        // Get recent savings with member info
+        $recent_savings = $group->savings()
+            ->with(['member.user'])
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Get member details with deadline info
+        $member_details = $members->map(function($member) {
+            return [
+                'member' => $member,
+                'user' => $member->user,
+                'active_loans' => $member->loans->where('status', 'active')->count(),
+                'total_loan_amount' => $member->loans->where('status', 'active')->sum('principal_amount'),
+                'savings_balance' => $member->savings->sum('balance'),
+                'upcoming_deadline' => $member->loans()
+                    ->where('status', 'active')
+                    ->where('maturity_date', '>', now())
+                    ->orderBy('maturity_date')
+                    ->value('maturity_date'),
+                'has_overdue' => $member->loans()
+                    ->where('status', 'active')
+                    ->where('maturity_date', '<', now())
+                    ->exists(),
+            ];
+        });
+
+        return view('dashboards.group-admin', compact(
+            'group',
+            'stats',
+            'members',
+            'member_details',
+            'upcoming_loans',
+            'overdue_loans',
+            'recent_savings'
+        ));
+    }
+
+    /**
+     * Show all loans for the group
+     */
+    public function loans(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $loans = $group->loans()
+            ->with('member')
+            ->paginate(15);
+
+        return view('dashboards.group-loans', compact('group', 'loans'));
+    }
+
+    /**
+     * Show all savings for the group
+     */
+    public function savings(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $savings = $group->savings()
+            ->with('member')
+            ->paginate(15);
+
+        return view('dashboards.group-savings', compact('group', 'savings'));
+    }
+
+    /**
+     * Show group members management
+     */
+    public function manageMembers(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $members = $group->groupMembers()
+            ->with('user')
+            ->paginate(15);
+
+        return view('dashboards.group-members', compact('group', 'members'));
+    }
+
+    /**
+     * Show group transactions
+     */
+    public function transactions(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $transactions = Transaction::where('group_id', $group->id)
+            ->with('user', 'group')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('dashboards.group-transactions', compact('group', 'transactions'));
+    }
+
+    /**
+     * Show group financial reports
+     */
+    public function reports(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $stats = [
+            'total_loans' => $group->loans()->sum('amount'),
+            'total_paid' => $group->loans()->sum('paid_amount'),
+            'outstanding' => $group->loans()->sum('amount') - $group->loans()->sum('paid_amount'),
+            'total_savings' => $group->savings()->sum('balance'),
+            'total_members' => $group->groupMembers()->where('status', 'active')->count(),
+            'active_loans' => $group->loans()->where('status', 'active')->count(),
+        ];
+
+        return view('dashboards.group-reports', compact('group', 'stats'));
+    }
+
+    /**
+     * Edit group information
+     */
+    public function editGroup(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        return view('dashboards.group-edit', compact('group'));
+    }
+
+    /**
+     * Update group information
+     */
+    public function updateGroup(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $validated = request()->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $group->update($validated);
+
+        return redirect()->route('group-admin.dashboard')
+            ->with('success', 'Group information updated successfully.');
+    }
+
+    /**
+     * Add member to group
+     */
+    public function addMember(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $validated = request()->validate([
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|in:member,treasurer,secretary',
+        ]);
+
+        // Check if user is already in group
+        $existing = GroupMember::where('group_id', $group->id)
+            ->where('user_id', $validated['user_id'])
+            ->first();
+
+        if ($existing) {
+            return back()->with('error', 'User is already a member of this group.');
+        }
+
+        GroupMember::create([
+            'group_id' => $group->id,
+            'user_id' => $validated['user_id'],
+            'role' => $validated['role'],
+            'status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        return redirect()->route('group-admin.manage-members', $group)
+            ->with('success', 'Member added successfully.');
+    }
+
+    /**
+     * Update member role
+     */
+    public function updateMemberRole(Group $group, GroupMember $member)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        if ($member->group_id !== $group->id) {
+            return back()->with('error', 'Member does not belong to this group.');
+        }
+
+        // Cannot demote own admin role
+        if ($member->user_id === Auth::id() && request('role') !== 'admin') {
+            return back()->with('error', 'You cannot demote your own admin role.');
+        }
+
+        $validated = request()->validate([
+            'role' => 'required|in:member,treasurer,secretary,admin',
+        ]);
+
+        $member->update(['role' => $validated['role']]);
+
+        return back()->with('success', 'Member role updated successfully.');
+    }
+
+    /**
+     * Remove member from group
+     */
+    public function removeMember(Group $group, GroupMember $member)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        if ($member->group_id !== $group->id) {
+            return back()->with('error', 'Member does not belong to this group.');
+        }
+
+        // Cannot remove self
+        if ($member->user_id === Auth::id()) {
+            return back()->with('error', 'You cannot remove yourself from the group.');
+        }
+
+        $member->update([
+            'status' => 'inactive',
+            'left_at' => now(),
+        ]);
+
+        return back()->with('success', 'Member removed from group.');
+    }
+
+    /**
+     * Authorize that user is admin of the group
+     */
+    private function authorizeGroupAdmin(Group $group)
+    {
+        $user = Auth::user();
+
+        $isAdmin = GroupMember::where('user_id', $user->id)
+            ->where('group_id', $group->id)
+            ->where('role', 'admin')
+            ->where('status', 'active')
+            ->exists();
+
+        if (!$isAdmin) {
+            abort(403, 'You are not authorized to manage this group.');
+        }
+    }
+}
