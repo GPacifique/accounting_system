@@ -171,15 +171,141 @@ class GroupAdminDashboardController extends Controller
         $this->authorizeGroupAdmin($group);
 
         $stats = [
-            'total_loans' => $group->loans()->sum('amount'),
-            'total_paid' => $group->loans()->sum('paid_amount'),
-            'outstanding' => $group->loans()->sum('amount') - $group->loans()->sum('paid_amount'),
-            'total_savings' => $group->savings()->sum('balance'),
+            'total_loans' => $group->loans()->sum('principal_amount'),
+            'total_principal_paid' => $group->loans()->sum('total_principal_paid'),
+            'outstanding' => ($group->loans()->sum('principal_amount') ?? 0) - ($group->loans()->sum('total_principal_paid') ?? 0),
+            'total_savings' => $group->savings()->sum('current_balance'),
             'total_members' => $group->groupMembers()->where('status', 'active')->count(),
             'active_loans' => $group->loans()->where('status', 'active')->count(),
         ];
 
         return view('dashboards.group-reports', compact('group', 'stats'));
+    }
+
+    /**
+     * Show form to record member savings
+     */
+    public function recordSavings(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $members = $group->groupMembers()
+            ->where('status', 'active')
+            ->with('user')
+            ->get();
+
+        return view('dashboards.group-record-savings', compact('group', 'members'));
+    }
+
+    /**
+     * Store member savings record
+     */
+    public function storeSavings(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $validated = request()->validate([
+            'member_id' => 'required|exists:group_members,id',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string|max:255',
+            'transaction_date' => 'nullable|date',
+        ]);
+
+        // Verify member belongs to group
+        $member = GroupMember::where('id', $validated['member_id'])
+            ->where('group_id', $group->id)
+            ->first();
+
+        if (!$member) {
+            return back()->with('error', 'Member does not belong to this group.');
+        }
+
+        // Get or create saving for this member
+        $saving = Saving::firstOrCreate(
+            ['group_id' => $group->id, 'member_id' => $member->id],
+            [
+                'current_balance' => 0,
+                'total_deposits' => 0,
+            ]
+        );
+
+        // Update saving with new deposit
+        $saving->increment('current_balance', $validated['amount']);
+        $saving->increment('total_deposits', $validated['amount']);
+        $saving->update(['last_deposit_date' => $validated['transaction_date'] ?? now()]);
+
+        // Record transaction
+        Transaction::create([
+            'group_id' => $group->id,
+            'member_id' => $member->id,
+            'type' => 'savings_deposit',
+            'amount' => $validated['amount'],
+            'balance_after' => $saving->current_balance,
+            'description' => $validated['description'] ?? 'Savings deposit',
+            'created_by' => Auth::id(),
+            'transaction_date' => $validated['transaction_date'] ?? now(),
+        ]);
+
+        return redirect()->route('group-admin.savings', $group)
+            ->with('success', 'Savings recorded successfully.');
+    }
+
+    /**
+     * Show form to record loan interest
+     */
+    public function recordInterest(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $loans = $group->loans()
+            ->where('status', 'active')
+            ->with(['member.user'])
+            ->get();
+
+        return view('dashboards.group-record-interest', compact('group', 'loans'));
+    }
+
+    /**
+     * Store loan interest record
+     */
+    public function storeInterest(Group $group)
+    {
+        $this->authorizeGroupAdmin($group);
+
+        $validated = request()->validate([
+            'loan_id' => 'required|exists:loans,id',
+            'interest_amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string|max:255',
+            'transaction_date' => 'nullable|date',
+        ]);
+
+        // Verify loan belongs to group
+        $loan = Loan::where('id', $validated['loan_id'])
+            ->where('group_id', $group->id)
+            ->first();
+
+        if (!$loan) {
+            return back()->with('error', 'Loan does not belong to this group.');
+        }
+
+        // Increment total charged (interest)
+        $loan->increment('total_charged', $validated['interest_amount']);
+
+        // Record transaction
+        Transaction::create([
+            'group_id' => $group->id,
+            'member_id' => $loan->member_id,
+            'type' => 'loan_interest',
+            'amount' => $validated['interest_amount'],
+            'balance_after' => $loan->remaining_balance,
+            'description' => $validated['description'] ?? 'Loan interest charge',
+            'reference' => 'loan_' . $loan->id,
+            'created_by' => Auth::id(),
+            'transaction_date' => $validated['transaction_date'] ?? now(),
+        ]);
+
+        return redirect()->route('group-admin.loans', $group)
+            ->with('success', 'Interest recorded successfully.');
     }
 
     /**

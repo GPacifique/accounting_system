@@ -25,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/groups/{group}/members', [GroupAdminDashboardController::class, 'members'])->name('members');
         Route::get('/groups/{group}/transactions', [GroupAdminDashboardController::class, 'transactions'])->name('transactions');
         Route::get('/groups/{group}/reports', [GroupAdminDashboardController::class, 'reports'])->name('reports');
+        Route::get('/groups/{group}/record-savings', [GroupAdminDashboardController::class, 'recordSavings'])->name('record-savings');
+        Route::post('/groups/{group}/record-savings', [GroupAdminDashboardController::class, 'storeSavings'])->name('store-savings');
+        Route::get('/groups/{group}/record-interest', [GroupAdminDashboardController::class, 'recordInterest'])->name('record-interest');
+        Route::post('/groups/{group}/record-interest', [GroupAdminDashboardController::class, 'storeInterest'])->name('store-interest');
     });
 
     // Member Dashboard Routes
