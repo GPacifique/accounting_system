@@ -13,6 +13,8 @@ Route::middleware(['auth', 'verified', AdminMiddleware::class])->prefix('admin')
     // Users Management
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'users'])->name('index');
+        Route::get('/create', [AdminDashboardController::class, 'createUser'])->name('create');
+        Route::post('/', [AdminDashboardController::class, 'storeUser'])->name('store');
         Route::get('/{user}/edit', [AdminDashboardController::class, 'editUser'])->name('edit');
         Route::put('/{user}', [AdminDashboardController::class, 'updateUser'])->name('update');
         Route::delete('/{user}', [AdminDashboardController::class, 'deleteUser'])->name('destroy');
@@ -31,12 +33,16 @@ Route::middleware(['auth', 'verified', AdminMiddleware::class])->prefix('admin')
     // Loans Management
     Route::prefix('loans')->name('loans.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'loans'])->name('index');
+        Route::get('/create', [AdminDashboardController::class, 'createLoan'])->name('create');
+        Route::post('/', [AdminDashboardController::class, 'storeLoan'])->name('store');
         Route::get('/{loan}', [AdminDashboardController::class, 'showLoan'])->name('show');
     });
 
     // Savings Management
     Route::prefix('savings')->name('savings.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'savings'])->name('index');
+        Route::get('/create', [AdminDashboardController::class, 'createSaving'])->name('create');
+        Route::post('/', [AdminDashboardController::class, 'storeSaving'])->name('store');
         Route::get('/{saving}', [AdminDashboardController::class, 'showSaving'])->name('show');
     });
 

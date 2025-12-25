@@ -70,6 +70,43 @@ class AdminDashboardController extends Controller
     }
 
     /**
+     * Show create user form
+     */
+    public function createUser(): View
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        return view('admin.users.create');
+    }
+
+    /**
+     * Store new user
+     */
+    public function storeUser()
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $validated = request()->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'is_admin' => 'boolean',
+        ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+        $validated['email_verified_at'] = now();
+
+        User::create($validated);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully');
+    }
+
+    /**
      * Show user details and edit form
      */
     public function editUser(User $user): View
@@ -238,6 +275,43 @@ class AdminDashboardController extends Controller
     }
 
     /**
+     * Show create loan form
+     */
+    public function createLoan(): View
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $members = GroupMember::with('user', 'group')->get();
+        return view('admin.loans.create', compact('members'));
+    }
+
+    /**
+     * Store new loan
+     */
+    public function storeLoan()
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $validated = request()->validate([
+            'group_member_id' => 'required|exists:group_members,id',
+            'principal_amount' => 'required|numeric|min:0.01',
+            'interest_rate' => 'required|numeric|min:0|max:100',
+            'loan_term_months' => 'required|integer|min:1',
+            'status' => 'required|in:pending,approved,disbursed,active,completed,defaulted,cancelled',
+            'description' => 'nullable|string',
+        ]);
+
+        Loan::create($validated);
+
+        return redirect()->route('admin.loans.index')
+            ->with('success', 'Loan created successfully');
+    }
+
+    /**
      * Show loan details
      */
     public function showLoan(Loan $loan): View
@@ -262,6 +336,42 @@ class AdminDashboardController extends Controller
 
         $savings = Saving::with('member.user', 'group')->paginate(20);
         return view('admin.savings.index', compact('savings'));
+    }
+
+    /**
+     * Show create saving form
+     */
+    public function createSaving(): View
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $members = GroupMember::with('user', 'group')->get();
+        return view('admin.savings.create', compact('members'));
+    }
+
+    /**
+     * Store new saving
+     */
+    public function storeSaving()
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $validated = request()->validate([
+            'group_member_id' => 'required|exists:group_members,id',
+            'current_balance' => 'required|numeric|min:0',
+            'interest_rate' => 'nullable|numeric|min:0|max:100',
+            'status' => 'required|in:active,dormant,closed',
+            'description' => 'nullable|string',
+        ]);
+
+        Saving::create($validated);
+
+        return redirect()->route('admin.savings.index')
+            ->with('success', 'Saving created successfully');
     }
 
     /**
