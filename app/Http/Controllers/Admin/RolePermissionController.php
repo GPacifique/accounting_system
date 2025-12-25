@@ -318,7 +318,7 @@ class RolePermissionController extends Controller
             }
         }
 
-        return redirect()->route('admin.groups.role-assignments', $group)
+        return redirect()->route('admin.groups.role-assignments.index', $group)
             ->with('success', "{$updatedCount} member role(s) updated successfully");
     }
 
