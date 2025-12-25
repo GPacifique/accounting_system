@@ -167,6 +167,9 @@ class AdminDashboardController extends Controller
             'status' => 'required|in:active,inactive,suspended',
         ]);
 
+        // Add the current user as the creator
+        $validated['created_by'] = auth()->id();
+
         Group::create($validated);
 
         return redirect()->route('admin.groups.index')
