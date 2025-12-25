@@ -218,6 +218,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->groupMembers()
                     ->where('role', 'admin')
                     ->where('status', 'active')
+                    ->with('group')
                     ->get()
                     ->pluck('group');
     }

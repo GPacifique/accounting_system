@@ -60,7 +60,7 @@
                                     <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mr-2"></span>System Admin
                                 </a>
                             @endif
-                            @if(auth()->user()->groupAdminGroups()->exists())
+                            @if(auth()->user()->isGroupAdminOfAny())
                                 <a href="{{ route('group-admin.dashboard') }}" class="block px-4 py-2 hover:bg-green-50 text-green-600 font-medium border-b">
                                     <span class="inline-block w-2 h-2 bg-green-600 rounded-full mr-2"></span>Group Admin
                                 </a>
