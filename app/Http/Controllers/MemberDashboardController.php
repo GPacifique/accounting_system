@@ -20,7 +20,7 @@ class MemberDashboardController extends Controller
         // Get user's groups with member counts
         $groups = $user->groups()
             ->where('groups.status', 'active')
-            ->withCount('groupMembers')
+            ->withCount('members')
             ->get();
 
         // Get user's loans through group members

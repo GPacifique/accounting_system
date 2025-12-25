@@ -28,7 +28,7 @@
                 @forelse($groups as $group)
                     <div class="border rounded-lg p-4 hover:shadow-lg transition">
                         <h3 class="font-semibold text-gray-900">{{ $group->name }}</h3>
-                        <p class="text-sm text-gray-600 mt-1">{{ $group->group_members_count ?? 0 }} members</p>
+                        <p class="text-sm text-gray-600 mt-1">{{ $group->members_count ?? 0 }} members</p>
                         <div class="mt-3 pt-3 border-t">
                             <p class="text-xs text-gray-500">Joined: {{ $group->pivot->created_at->format('M d, Y') }}</p>
                         </div>
