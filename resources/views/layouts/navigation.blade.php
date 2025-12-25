@@ -39,7 +39,7 @@
                         </x-dropdown-link>
 
                         <!-- Admin Links -->
-                        @if(auth()->user()->is_admin || auth()->user()->hasRole('system_admin'))
+                        @if(auth()->user()->is_admin)
                             <div class="border-t border-gray-100"></div>
                             <x-dropdown-link :href="route('admin.roles.index')">
                                 {{ __('Manage Roles') }}
@@ -99,7 +99,7 @@
                 </x-responsive-nav-link>
 
                 <!-- Admin Links -->
-                @if(auth()->user()->is_admin || auth()->user()->hasRole('system_admin'))
+                @if(auth()->user()->is_admin)
                     <x-responsive-nav-link :href="route('admin.roles.index')">
                         {{ __('Manage Roles') }}
                     </x-responsive-nav-link>
