@@ -11,7 +11,7 @@
             <p class="text-gray-500 mt-1">Assign and manage member roles for this group</p>
         </div>
         <div class="flex gap-3">
-            <a href="{{ route('admin.groups.permission-matrix', $group) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('admin.groups.permissions', $group) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                 View Permissions
             </a>
             <a href="{{ route('admin.groups.members.index', $group) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
