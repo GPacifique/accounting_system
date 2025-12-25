@@ -26,15 +26,19 @@
                 </div>
                 <div class="py-2 border-b">
                     <p class="text-xs text-gray-500 uppercase">Loan Amount</p>
-                    <p class="text-2xl font-bold text-green-600">{{ number_format($loan->amount, 2) }}</p>
+                    <p class="text-2xl font-bold text-green-600">{{ number_format($loan->principal_amount, 2) }}</p>
                 </div>
                 <div class="py-2 border-b">
-                    <p class="text-xs text-gray-500 uppercase">Interest Rate</p>
-                    <p class="text-lg font-semibold text-gray-900">{{ $loan->interest_rate }}%</p>
+                    <p class="text-xs text-gray-500 uppercase">Monthly Charge</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ number_format($loan->monthly_charge, 2) }}</p>
                 </div>
                 <div class="py-2 border-b">
-                    <p class="text-xs text-gray-500 uppercase">Loan Period (Months)</p>
-                    <p class="text-lg font-semibold text-gray-900">{{ $loan->loan_period }}</p>
+                    <p class="text-xs text-gray-500 uppercase">Duration (Months)</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $loan->duration_months }}</p>
+                </div>
+                <div class="py-2 border-b">
+                    <p class="text-xs text-gray-500 uppercase">Months Paid</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $loan->months_paid }}</p>
                 </div>
                 <div class="py-2 border-b">
                     <p class="text-xs text-gray-500 uppercase">Status</p>
@@ -43,12 +47,12 @@
                     </span>
                 </div>
                 <div class="py-2 border-b">
-                    <p class="text-xs text-gray-500 uppercase">Application Date</p>
-                    <p class="text-sm text-gray-700">{{ $loan->application_date->format('M d, Y') }}</p>
+                    <p class="text-xs text-gray-500 uppercase">Issue Date</p>
+                    <p class="text-sm text-gray-700">{{ $loan->issued_at?->format('M d, Y') ?? 'N/A' }}</p>
                 </div>
                 <div class="py-2">
-                    <p class="text-xs text-gray-500 uppercase">Disbursement Date</p>
-                    <p class="text-sm text-gray-700">{{ $loan->disbursement_date?->format('M d, Y') ?? 'Not Yet Disbursed' }}</p>
+                    <p class="text-xs text-gray-500 uppercase">Maturity Date</p>
+                    <p class="text-sm text-gray-700">{{ $loan->maturity_date?->format('M d, Y') ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>
@@ -58,20 +62,20 @@
             <h3 class="text-lg font-bold text-gray-900 mb-4">Summary</h3>
             <div class="space-y-4">
                 <div class="py-3 bg-green-50 rounded-lg text-center">
-                    <p class="text-xs text-gray-600 uppercase">Total Amount</p>
-                    <p class="text-2xl font-bold text-green-600">{{ number_format($loan->amount, 2) }}</p>
+                    <p class="text-xs text-gray-600 uppercase">Principal Amount</p>
+                    <p class="text-2xl font-bold text-green-600">{{ number_format($loan->principal_amount, 2) }}</p>
                 </div>
                 <div class="py-3 bg-blue-50 rounded-lg text-center">
                     <p class="text-xs text-gray-600 uppercase">Total Paid</p>
-                    <p class="text-2xl font-bold text-blue-600">{{ number_format($payments->sum('amount'), 2) }}</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ number_format($loan->total_principal_paid, 2) }}</p>
                 </div>
                 <div class="py-3 bg-yellow-50 rounded-lg text-center">
-                    <p class="text-xs text-gray-600 uppercase">Balance</p>
-                    <p class="text-2xl font-bold text-yellow-600">{{ number_format($loan->amount - $payments->sum('amount'), 2) }}</p>
+                    <p class="text-xs text-gray-600 uppercase">Remaining Balance</p>
+                    <p class="text-2xl font-bold text-yellow-600">{{ number_format($loan->remaining_balance, 2) }}</p>
                 </div>
                 <div class="py-3 bg-purple-50 rounded-lg text-center">
-                    <p class="text-xs text-gray-600 uppercase">Payments Made</p>
-                    <p class="text-2xl font-bold text-purple-600">{{ $payments->count() }}</p>
+                    <p class="text-xs text-gray-600 uppercase">Total Charges</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ number_format($loan->total_charged, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -83,12 +87,12 @@
             <h2 class="text-lg font-bold text-gray-900">Loan Payments ({{ $payments->total() }})</h2>
         </div>
         <table class="w-full">
-            <thead class="bg-gray-50 border-b">
+            <thead class="bg-blue-600 text-white">
                 <tr>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Payment ID</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Amount</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Payment Date</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Method</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Payment ID</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Amount</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Payment Date</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Method</th>
                 </tr>
             </thead>
             <tbody class="divide-y">
@@ -117,12 +121,12 @@
                 <h2 class="text-lg font-bold text-gray-900">Loan Charges ({{ $charges->count() }})</h2>
             </div>
             <table class="w-full">
-                <thead class="bg-gray-50 border-b">
+                <thead class="bg-blue-600 text-white">
                     <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Charge ID</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Type</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Amount</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date Added</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Charge ID</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Type</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Amount</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Date Added</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">

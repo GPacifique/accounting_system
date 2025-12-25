@@ -52,13 +52,13 @@
         <!-- Members Table -->
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-100 border-b">
+                <thead class="bg-blue-600 text-white border-b">
                     <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Member Name</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Email</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Current Role</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">New Role</th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Member Name</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Current Role</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">New Role</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">

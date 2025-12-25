@@ -24,20 +24,20 @@
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-100 border-b">
+                <thead class="bg-blue-600 text-white border-b">
                     <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Permission</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">
+                        <th class="px-6 py-4 text-left text-sm font-semibold">Permission</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">
                             <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">
                                 Admin
                             </span>
                         </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">
+                        <th class="px-6 py-4 text-center text-sm font-semibold">
                             <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
                                 Treasurer
                             </span>
                         </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">
+                        <th class="px-6 py-4 text-center text-sm font-semibold">
                             <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800">
                                 Member
                             </span>

@@ -42,11 +42,33 @@ class MemberDashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Calculate loan statistics
+        // Calculate comprehensive loan statistics
         $loan_stats = [
             'total_loaned' => $loans->sum('principal_amount') ?? 0,
             'total_paid' => $loans->sum('total_principal_paid') ?? 0,
             'outstanding' => ($loans->sum('principal_amount') ?? 0) - ($loans->sum('total_principal_paid') ?? 0),
+            'active_count' => $loans->where('status', 'active')->count(),
+            'completed_count' => $loans->where('status', 'completed')->count(),
+            'overdue_count' => $loans->where('status', 'overdue')->count(),
+        ];
+
+        // Calculate comprehensive savings statistics
+        $savings_stats = [
+            'total_accounts' => $savings->count(),
+            'total_weekly_deposits' => $savings->sum('current_balance') ?? 0,
+            'total_accumulated' => $savings->sum('total_deposits') ?? 0,
+            'total_withdrawals' => $savings->sum('total_withdrawals') ?? 0,
+            'total_interest_earned' => $savings->sum('interest_earned') ?? 0,
+            'total_balance' => $savings->sum('balance') ?? 0, // Using balance accessor
+        ];
+
+        // Calculate overall account stats
+        $account_stats = [
+            'groups_count' => $groups->count(),
+            'active_loans' => $loan_stats['active_count'],
+            'total_loans' => $loans->count(),
+            'total_savings_accounts' => $savings_stats['total_accounts'],
+            'net_worth' => ($savings_stats['total_balance'] ?? 0) - ($loan_stats['outstanding'] ?? 0),
         ];
 
         return view('dashboards.member', compact(
@@ -54,7 +76,9 @@ class MemberDashboardController extends Controller
             'loans',
             'savings',
             'transactions',
-            'loan_stats'
+            'loan_stats',
+            'savings_stats',
+            'account_stats'
         ));
     }
 
@@ -97,9 +121,16 @@ class MemberDashboardController extends Controller
             ->paginate(10);
 
         $stats = [
-            'total_balance' => $savings->sum('current_balance') ?? 0,
+            'total_balance' => $savings->sum('balance') ?? 0,      // Using balance accessor
             'total_saved' => $savings->sum('total_deposits') ?? 0,
+            'total_withdrawn' => $savings->sum('total_withdrawals') ?? 0,
+            'total_interest' => $savings->sum('interest_earned') ?? 0,
             'account_count' => $savings->count(),
+            'weekly_deposits' => $savings->sum('current_balance') ?? 0,
+            'accounts' => [
+                'active' => $savings->filter(fn($s) => $s->created_at->isAfter(now()->subMonths(3)))->count(),
+                'older' => $savings->filter(fn($s) => $s->created_at->isBefore(now()->subMonths(3)))->count(),
+            ],
         ];
 
         return view('dashboards.member-savings', compact('savings', 'stats'));

@@ -33,7 +33,7 @@ class GroupAdminDashboardController extends Controller
         }
 
         // Get active members with their loan and savings info
-        $members = $group->groupMembers()
+        $members = $group->members()
             ->where('status', 'active')
             ->with(['user', 'loans', 'savings'])
             ->get();
@@ -44,10 +44,10 @@ class GroupAdminDashboardController extends Controller
             'active_loans' => $group->loans()->where('status', 'active')->count(),
             'total_loans' => $group->loans()->count(),
             'total_loan_amount' => $group->loans()->sum('principal_amount'),
-            'total_savings_balance' => $group->savings()->sum('balance'),
+            'total_savings_balance' => $group->savings()->get()->sum('balance'),
             'overdue_loans' => $group->loans()->where('status', 'active')->where('maturity_date', '<', now())->count(),
-            'pending_charges' => $group->loans()->sum(function($loan) {
-                return $loan->pendingCharges()->sum('charge_amount');
+            'pending_charges' => $group->loans()->get()->sum(function($loan) {
+                return optional($loan->pendingCharges())->sum('charge_amount') ?? 0;
             }),
         ];
 
@@ -72,6 +72,13 @@ class GroupAdminDashboardController extends Controller
         $recent_savings = $group->savings()
             ->with(['member.user'])
             ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get();
+
+        // Get recent loans with member info
+        $recent_loans = $group->loans()
+            ->with(['member.user'])
+            ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
@@ -102,6 +109,7 @@ class GroupAdminDashboardController extends Controller
             'member_details',
             'upcoming_loans',
             'overdue_loans',
+            'recent_loans',
             'recent_savings'
         ));
     }
@@ -137,11 +145,11 @@ class GroupAdminDashboardController extends Controller
     /**
      * Show group members management
      */
-    public function manageMembers(Group $group)
+    public function members(Group $group)
     {
         $this->authorizeGroupAdmin($group);
 
-        $members = $group->groupMembers()
+        $members = $group->members()
             ->with('user')
             ->paginate(15);
 
@@ -175,7 +183,7 @@ class GroupAdminDashboardController extends Controller
             'total_principal_paid' => $group->loans()->sum('total_principal_paid'),
             'outstanding' => ($group->loans()->sum('principal_amount') ?? 0) - ($group->loans()->sum('total_principal_paid') ?? 0),
             'total_savings' => $group->savings()->sum('current_balance'),
-            'total_members' => $group->groupMembers()->where('status', 'active')->count(),
+            'total_members' => $group->members()->where('status', 'active')->count(),
             'active_loans' => $group->loans()->where('status', 'active')->count(),
         ];
 
@@ -189,7 +197,7 @@ class GroupAdminDashboardController extends Controller
     {
         $this->authorizeGroupAdmin($group);
 
-        $members = $group->groupMembers()
+        $members = $group->members()
             ->where('status', 'active')
             ->with('user')
             ->get();
@@ -238,7 +246,7 @@ class GroupAdminDashboardController extends Controller
         Transaction::create([
             'group_id' => $group->id,
             'member_id' => $member->id,
-            'type' => 'savings_deposit',
+            'type' => 'deposit',
             'amount' => $validated['amount'],
             'balance_after' => $saving->current_balance,
             'description' => $validated['description'] ?? 'Savings deposit',
@@ -295,7 +303,7 @@ class GroupAdminDashboardController extends Controller
         Transaction::create([
             'group_id' => $group->id,
             'member_id' => $loan->member_id,
-            'type' => 'loan_interest',
+            'type' => 'interest',
             'amount' => $validated['interest_amount'],
             'balance_after' => $loan->remaining_balance,
             'description' => $validated['description'] ?? 'Loan interest charge',

@@ -62,6 +62,16 @@ class GroupMember extends Model
         return $this->hasMany(Transaction::class, 'member_id');
     }
 
+    public function settlements(): HasMany
+    {
+        return $this->hasMany(Settlement::class, 'member_id');
+    }
+
+    public function penalties(): HasMany
+    {
+        return $this->hasMany(Penalty::class, 'member_id');
+    }
+
     public function getActiveLoanCount(): int
     {
         return $this->loans()->where('status', 'active')->count();

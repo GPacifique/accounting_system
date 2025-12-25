@@ -64,6 +64,16 @@ class Group extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function settlementPeriods(): HasMany
+    {
+        return $this->hasMany(SettlementPeriod::class);
+    }
+
+    public function penalties(): HasMany
+    {
+        return $this->hasMany(Penalty::class);
+    }
+
     public function activeLoanCount(): int
     {
         return $this->loans()->whereIn('status', ['active', 'pending', 'approved'])->count();

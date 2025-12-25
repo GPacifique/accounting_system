@@ -14,7 +14,7 @@
     <!-- Transactions Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="w-full">
-            <thead class="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <thead class="bg-blue-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Transaction ID</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">User</th>

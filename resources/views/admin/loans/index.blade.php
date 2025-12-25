@@ -22,7 +22,7 @@
     <!-- Loans Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="w-full">
-            <thead class="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <thead class="bg-blue-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Member</th>
@@ -40,12 +40,16 @@
                         <td class="px-6 py-4 text-sm font-semibold text-gray-900">#{{ $loan->id }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $loan->member?->user?->name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $loan->group?->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ number_format($loan->amount, 2) }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-600">{{ $loan->interest_rate }}%</td>
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ number_format($loan->principal_amount, 2) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ number_format($loan->monthly_charge, 2) }}</td>
                         <td class="px-6 py-4 text-sm">
-                            <span class="px-3 py-1 rounded-full text-xs font-bold {{ $loan->status === 'active' ? 'bg-green-100 text-green-800' : ($loan->status === 'paid' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ ucfirst($loan->status) }}
-                            </span>
+                            @if($loan->status === 'active')
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">Active</span>
+                            @elseif($loan->status === 'paid')
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Paid</span>
+                            @else
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">{{ ucfirst($loan->status) }}</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $loan->disbursement_date?->format('M d, Y') ?? 'Pending' }}</td>
                         <td class="px-6 py-4 text-sm">

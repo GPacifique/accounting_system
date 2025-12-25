@@ -1,4 +1,10 @@
-# Group Member Role and Permission Management - Implementation Summary
+📋 Menu Contents (In Order)
+✅ System Admin (blue)
+✅ Group Admin (green) - if applicable
+✅ Member (purple) - if applicable
+➖ Settings
+➖ Profile
+🔴 Logout (red - prominent)# Group Member Role and Permission Management - Implementation Summary
 
 ## Overview
 
@@ -50,6 +56,20 @@ A comprehensive group member role and permission management system has been succ
 - outstanding_loans (decimal)
 - joined_at (date)
 - created_at, updated_at, deleted_at (timestamps)
+```
+
+**savings table** fields (tracks each member's savings account):
+```sql
+- id (primary key)
+- group_id (foreign key → groups)
+- member_id (foreign key → group_members)
+- current_balance (decimal) - Weekly deposit amount
+- total_deposits (decimal)
+- total_withdrawals (decimal)
+- interest_earned (decimal)
+- last_deposit_date (date)
+- last_withdrawal_date (date)
+- created_at, updated_at (timestamps)
 ```
 
 ### 4. Routes

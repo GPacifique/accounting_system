@@ -46,6 +46,23 @@ class Saving extends Model
     }
 
     /**
+     * Get the current balance (accumulated savings)
+     * Calculated as: total_deposits - total_withdrawals + interest_earned
+     */
+    public function getBalanceAttribute(): float
+    {
+        return (float) ($this->total_deposits - $this->total_withdrawals + $this->interest_earned);
+    }
+
+    /**
+     * Get total saved (alias for balance for readability)
+     */
+    public function getTotalSavedAttribute(): float
+    {
+        return $this->balance;
+    }
+
+    /**
      * Add funds to savings
      */
     public function deposit(float $amount, string $description = null): void

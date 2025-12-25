@@ -49,10 +49,14 @@ class AdminDashboardController extends Controller
         }
 
         $recent_users = User::latest()->take(5)->get();
-        $recent_groups = Group::latest()->take(5)->get();
+        $recent_groups = Group::with('creator')
+            ->withCount('members')
+            ->latest()
+            ->take(5)
+            ->get();
         $recent_loans = Loan::latest()->take(5)->with('member')->get();
         $recent_savings = Saving::latest()->take(5)->with('member')->get();
-        $recent_transactions = Transaction::latest()->take(10)->with('user')->get();
+        $recent_transactions = Transaction::latest()->take(10)->with('createdByUser')->get();
 
         return view('admin.dashboard', compact('stats', 'recent_users', 'recent_groups', 'recent_loans', 'recent_savings', 'recent_transactions'));
     }
@@ -307,15 +311,31 @@ class AdminDashboardController extends Controller
         // Get the GroupMember to extract group_id
         $groupMember = GroupMember::findOrFail($validated['group_member_id']);
 
+        // Calculate monthly charge based on principal and interest
+        $principal = (float) $validated['principal_amount'];
+        $interestRate = (float) $validated['interest_rate'] / 100;
+        $months = (int) $validated['loan_term_months'];
+
+        // Calculate monthly charge: (Principal * InterestRate * Months) / Months
+        // Or: Principal * InterestRate
+        $monthlyCharge = ($principal * $interestRate) / $months;
+        $totalCharged = $monthlyCharge * $months;
+
         // Create loan with correct field mappings
         Loan::create([
             'group_id' => $groupMember->group_id,
             'member_id' => $validated['group_member_id'],
-            'principal_amount' => $validated['principal_amount'],
-            'interest_rate' => $validated['interest_rate'],
-            'loan_term_months' => $validated['loan_term_months'],
+            'principal_amount' => $principal,
+            'monthly_charge' => $monthlyCharge,
+            'remaining_balance' => $principal,
+            'duration_months' => $months,
+            'months_paid' => 0,
+            'total_charged' => $totalCharged,
+            'total_principal_paid' => 0,
+            'issued_at' => now()->toDateString(),
+            'maturity_date' => now()->addMonths($months)->toDateString(),
             'status' => $validated['status'],
-            'description' => $validated['description'] ?? null,
+            'notes' => $validated['description'] ?? null,
         ]);
 
         return redirect()->route('admin.loans.index')

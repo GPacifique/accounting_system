@@ -65,6 +65,8 @@ class Kernel extends HttpKernel
         'group.access' => \App\Http\Middleware\VerifyGroupAccess::class,
         'group.role' => \App\Http\Middleware\VerifyGroupRole::class,
         'group.admin' => \App\Http\Middleware\CheckGroupAdminAccess::class,
+        'member.access' => \App\Http\Middleware\CheckMemberAccess::class,
+        'dashboard.redirect' => \App\Http\Middleware\DashboardRedirect::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'admin.check' => \App\Http\Middleware\CheckAdminStatus::class,
     ];

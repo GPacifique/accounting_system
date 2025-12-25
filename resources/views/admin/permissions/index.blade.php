@@ -41,12 +41,12 @@
                     </div>
 
                     <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
+                        <thead class="bg-blue-600 text-white">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Permission Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Display Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Used By</th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Permission Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Display Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Used By</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">

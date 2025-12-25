@@ -36,9 +36,9 @@
                 @enderror
             </div>
 
-            <!-- Current Balance -->
+            <!-- Weekly Deposit Amount -->
             <div class="mb-6">
-                <label for="current_balance" class="block text-sm font-bold text-gray-700 mb-2">Current Balance</label>
+                <label for="current_balance" class="block text-sm font-bold text-gray-700 mb-2">Weekly Deposit Amount</label>
                 <input
                     type="number"
                     id="current_balance"
@@ -50,6 +50,7 @@
                     placeholder="0.00"
                     required
                 >
+                <p class="text-gray-500 text-xs mt-1">Amount to deposit weekly into the group savings</p>
                 @error('current_balance')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror

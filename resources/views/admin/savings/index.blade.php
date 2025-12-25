@@ -22,12 +22,12 @@
     <!-- Savings Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="w-full">
-            <thead class="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+            <thead class="bg-blue-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Member</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Group</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Current Balance</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Weekly Deposit Amount</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Interest Rate</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Opened</th>
@@ -40,8 +40,8 @@
                         <td class="px-6 py-4 text-sm font-semibold text-gray-900">#{{ $saving->id }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $saving->member?->user?->name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $saving->group?->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 text-sm font-semibold text-green-600">{{ number_format($saving->balance, 2) }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-600">{{ $saving->interest_rate }}%</td>
+                        <td class="px-6 py-4 text-sm font-semibold text-green-600">{{ number_format($saving->current_balance, 2) }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">{{ $saving->interest_earned }}%</td>
                         <td class="px-6 py-4 text-sm">
                             <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
                                 Active

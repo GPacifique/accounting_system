@@ -183,7 +183,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <p class="text-sm font-semibold text-gray-900">{{ $group->name }}</p>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $group->admin?->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $group->creator?->name ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="text-sm font-semibold text-gray-900">{{ $group->members_count ?? 0 }}</span>
                                     </td>
@@ -336,7 +336,7 @@
     <!-- Recent Transactions -->
     <div class="bg-white rounded-lg shadow-sm mt-8">
         <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-lg font-bold text-gray-900">Recent Transactions</h2>
+            <h2 class="text-lg font-bold text-gray-900">Recent Financial Transactions</h2>
             <a href="{{ route('admin.transactions.index') }}" class="inline-flex items-center text-blue-500 hover:text-blue-700 text-sm font-semibold">
                 <span>View All</span>
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -348,26 +348,40 @@
             <table class="w-full">
                 <thead class="bg-gray-50 border-b">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Member</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Action</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Created By</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($recent_transactions as $transaction)
                         <tr class="border-b hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $transaction->user?->name ?? 'System' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $transaction->member?->user?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">
-                                    {{ class_basename($transaction->loggable_type) }}
+                                @php
+                                    $typeColors = [
+                                        'deposit' => 'green',
+                                        'withdrawal' => 'red',
+                                        'loan_disburse' => 'blue',
+                                        'loan_payment' => 'purple',
+                                        'interest' => 'orange',
+                                        'charge' => 'red',
+                                        'fee' => 'gray',
+                                    ];
+                                    $color = $typeColors[$transaction->type] ?? 'gray';
+                                @endphp
+                                <span class="px-3 py-1 bg-{{ $color }}-100 text-{{ $color }}-800 rounded-full text-xs font-semibold">
+                                    {{ ucfirst(str_replace('_', ' ', $transaction->type)) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ ucfirst(str_replace('_', ' ', $transaction->action)) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{ number_format($transaction->amount, 2) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $transaction->createdByUser?->name ?? 'System' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $transaction->created_at->format('M d, Y h:i A') }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No transactions found</td></tr>
+                        <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No transactions found</td></tr>
                     @endforelse
                 </tbody>
             </table>

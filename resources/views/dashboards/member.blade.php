@@ -44,6 +44,54 @@
             </div>
         </div>
 
+        <!-- Account Statistics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            <!-- Groups Count -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow p-4 border border-blue-200">
+                <div class="text-center">
+                    <p class="text-xs text-blue-600 uppercase font-semibold">Groups</p>
+                    <p class="text-3xl font-bold text-blue-900">{{ $account_stats['groups_count'] ?? 0 }}</p>
+                    <p class="text-xs text-blue-700 mt-1">Active groups</p>
+                </div>
+            </div>
+
+            <!-- Total Loans -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg shadow p-4 border border-purple-200">
+                <div class="text-center">
+                    <p class="text-xs text-purple-600 uppercase font-semibold">Total Loans</p>
+                    <p class="text-3xl font-bold text-purple-900">{{ $account_stats['total_loans'] ?? 0 }}</p>
+                    <p class="text-xs text-purple-700 mt-1">{{ $account_stats['active_loans'] ?? 0 }} active</p>
+                </div>
+            </div>
+
+            <!-- Savings Accounts -->
+            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg shadow p-4 border border-green-200">
+                <div class="text-center">
+                    <p class="text-xs text-green-600 uppercase font-semibold">Savings Accounts</p>
+                    <p class="text-3xl font-bold text-green-900">{{ $account_stats['total_savings_accounts'] ?? 0 }}</p>
+                    <p class="text-xs text-green-700 mt-1">Active accounts</p>
+                </div>
+            </div>
+
+            <!-- Outstanding Loans -->
+            <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg shadow p-4 border border-red-200">
+                <div class="text-center">
+                    <p class="text-xs text-red-600 uppercase font-semibold">Outstanding Debt</p>
+                    <p class="text-2xl font-bold text-red-900">{{ number_format($loan_stats['outstanding'] ?? 0, 0) }}</p>
+                    <p class="text-xs text-red-700 mt-1">Due amount</p>
+                </div>
+            </div>
+
+            <!-- Net Worth -->
+            <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg shadow p-4 border border-emerald-200">
+                <div class="text-center">
+                    <p class="text-xs text-emerald-600 uppercase font-semibold">Net Worth</p>
+                    <p class="text-2xl font-bold text-emerald-900">{{ number_format($account_stats['net_worth'] ?? 0, 0) }}</p>
+                    <p class="text-xs text-emerald-700 mt-1">Savings - Debt</p>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Left Column (2/3) -->
             <div class="lg:col-span-2">
@@ -64,26 +112,40 @@
                                             {{ ucfirst($loan->status) }}
                                         </span>
                                     </div>
-                                    <p class="text-sm text-gray-600">Amount: {{ number_format($loan->amount, 2) }}</p>
-                                    <p class="text-sm text-gray-600">Paid: {{ number_format($loan->paid_amount, 2) }} / Remaining: {{ number_format($loan->amount - $loan->paid_amount, 2) }}</p>
-                                    <p class="text-xs text-gray-500 mt-2">Issued: {{ $loan->created_at->format('M d, Y') }} | Due: {{ $loan->due_date->format('M d, Y') }}</p>
+                                    <p class="text-sm text-gray-600">Amount: {{ number_format($loan->principal_amount, 2) }}</p>
+                                    <p class="text-sm text-gray-600">Paid: {{ number_format($loan->total_principal_paid, 2) }} / Remaining: {{ number_format($loan->remaining_balance, 2) }}</p>
+                                    <p class="text-xs text-gray-500 mt-2">Issued: {{ $loan->issued_at ? \Carbon\Carbon::parse($loan->issued_at)->format('M d, Y') : 'N/A' }} | Due: {{ $loan->maturity_date ? \Carbon\Carbon::parse($loan->maturity_date)->format('M d, Y') : 'N/A' }}</p>
                                 </div>
                             @endforeach
                         </div>
 
                         <div class="mt-4 pt-4 border-t border-gray-200">
-                            <div class="grid grid-cols-3 gap-4 text-center">
+                            <div class="grid grid-cols-4 gap-2 text-center">
                                 <div>
                                     <p class="text-xs text-gray-500 uppercase">Total Loaned</p>
-                                    <p class="text-lg font-bold text-blue-600">{{ number_format($loan_stats['total_loaned'], 2) }}</p>
+                                    <p class="text-lg font-bold text-blue-600">{{ number_format($loan_stats['total_loaned'], 0) }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-gray-500 uppercase">Total Paid</p>
-                                    <p class="text-lg font-bold text-green-600">{{ number_format($loan_stats['total_paid'], 2) }}</p>
+                                    <p class="text-xs text-gray-500 uppercase">Paid</p>
+                                    <p class="text-lg font-bold text-green-600">{{ number_format($loan_stats['total_paid'], 0) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 uppercase">Outstanding</p>
-                                    <p class="text-lg font-bold text-red-600">{{ number_format($loan_stats['outstanding'], 2) }}</p>
+                                    <p class="text-lg font-bold text-red-600">{{ number_format($loan_stats['outstanding'], 0) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Active</p>
+                                    <p class="text-lg font-bold text-purple-600">{{ $loan_stats['active_count'] ?? 0 }}</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-center mt-3">
+                                <div class="bg-blue-50 rounded p-2">
+                                    <p class="text-xs text-gray-500 uppercase">Completed</p>
+                                    <p class="text-lg font-bold text-blue-600">{{ $loan_stats['completed_count'] ?? 0 }}</p>
+                                </div>
+                                <div class="bg-orange-50 rounded p-2">
+                                    <p class="text-xs text-gray-500 uppercase">Overdue</p>
+                                    <p class="text-lg font-bold text-orange-600">{{ $loan_stats['overdue_count'] ?? 0 }}</p>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +171,7 @@
                                             Active
                                         </span>
                                     </div>
-                                    <p class="text-sm text-gray-600">Current Balance: {{ number_format($saving->balance, 2) }}</p>
+                                    <p class="text-sm text-gray-600">Weekly Deposit: {{ number_format($saving->current_balance, 2) }}</p>
                                     <p class="text-sm text-gray-600">Total Saved: {{ number_format($saving->total_saved, 2) }}</p>
                                     <p class="text-xs text-gray-500 mt-2">Opened: {{ $saving->created_at->format('M d, Y') }}</p>
                                 </div>
@@ -117,9 +179,29 @@
                         </div>
 
                         <div class="mt-4 pt-4 border-t border-gray-200">
-                            <div class="text-center">
-                                <p class="text-xs text-gray-500 uppercase">Total Savings Balance</p>
-                                <p class="text-2xl font-bold text-green-600">{{ number_format($savings->sum('balance'), 2) }}</p>
+                            <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Total Balance</p>
+                                    <p class="text-2xl font-bold text-green-600">{{ number_format($savings_stats['total_balance'] ?? 0, 0) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Total Saved</p>
+                                    <p class="text-lg font-bold text-blue-600">{{ number_format($savings_stats['total_accumulated'] ?? 0, 0) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Interest Earned</p>
+                                    <p class="text-lg font-bold text-emerald-600">{{ number_format($savings_stats['total_interest_earned'] ?? 0, 0) }}</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-center">
+                                <div class="bg-green-50 rounded p-2">
+                                    <p class="text-xs text-gray-500 uppercase">Weekly Deposits</p>
+                                    <p class="text-lg font-bold text-green-600">{{ number_format($savings_stats['total_weekly_deposits'] ?? 0, 0) }}</p>
+                                </div>
+                                <div class="bg-red-50 rounded p-2">
+                                    <p class="text-xs text-gray-500 uppercase">Withdrawals</p>
+                                    <p class="text-lg font-bold text-red-600">{{ number_format($savings_stats['total_withdrawals'] ?? 0, 0) }}</p>
+                                </div>
                             </div>
                         </div>
                     @else
@@ -202,16 +284,34 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Balance Summary</h3>
                     <div class="space-y-3">
                         <div class="border-b pb-3">
-                            <p class="text-xs text-gray-500 uppercase">Total Loaned</p>
-                            <p class="text-2xl font-bold text-blue-600">{{ number_format($loan_stats['total_loaned'] ?? 0, 2) }}</p>
+                            <p class="text-xs text-gray-500 uppercase">Total Savings</p>
+                            <p class="text-2xl font-bold text-green-600">{{ number_format($savings_stats['total_balance'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ $account_stats['total_savings_accounts'] ?? 0 }} accounts</p>
                         </div>
                         <div class="border-b pb-3">
-                            <p class="text-xs text-gray-500 uppercase">Loan Outstanding</p>
-                            <p class="text-2xl font-bold text-red-600">{{ number_format($loan_stats['outstanding'] ?? 0, 2) }}</p>
+                            <p class="text-xs text-gray-500 uppercase">Weekly Deposits</p>
+                            <p class="text-xl font-bold text-blue-600">{{ number_format($savings_stats['total_weekly_deposits'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-gray-600 mt-1">Per week total</p>
                         </div>
-                        <div>
-                            <p class="text-xs text-gray-500 uppercase">Total Savings</p>
-                            <p class="text-2xl font-bold text-green-600">{{ number_format($savings->sum('balance') ?? 0, 2) }}</p>
+                        <div class="border-b pb-3">
+                            <p class="text-xs text-gray-500 uppercase">Total Loaned</p>
+                            <p class="text-2xl font-bold text-purple-600">{{ number_format($loan_stats['total_loaned'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ $account_stats['total_loans'] ?? 0 }} loans</p>
+                        </div>
+                        <div class="border-b pb-3">
+                            <p class="text-xs text-gray-500 uppercase">Outstanding Debt</p>
+                            <p class="text-2xl font-bold text-red-600">{{ number_format($loan_stats['outstanding'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-gray-600 mt-1">{{ $loan_stats['active_count'] ?? 0 }} active loans</p>
+                        </div>
+                        <div class="bg-emerald-50 rounded-lg p-3">
+                            <p class="text-xs text-emerald-600 uppercase font-semibold">Net Worth</p>
+                            <p class="text-3xl font-bold text-emerald-700">{{ number_format($account_stats['net_worth'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-emerald-700 mt-1">Savings minus debt</p>
+                        </div>
+                        <div class="bg-teal-50 rounded-lg p-3">
+                            <p class="text-xs text-teal-600 uppercase font-semibold">Interest Earned</p>
+                            <p class="text-2xl font-bold text-teal-700">{{ number_format($savings_stats['total_interest_earned'] ?? 0, 0) }}</p>
+                            <p class="text-xs text-teal-700 mt-1">Total interest</p>
                         </div>
                     </div>
                 </div>

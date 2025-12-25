@@ -23,13 +23,13 @@
         <!-- Users Table -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <table class="w-full">
-                <thead class="bg-gray-100 border-b border-gray-200">
+                <thead class="bg-blue-600 text-white">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">User Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">System Admin</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Assigned Roles</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">User Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">System Admin</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Assigned Roles</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">

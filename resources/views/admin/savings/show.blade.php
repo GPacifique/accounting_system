@@ -25,8 +25,8 @@
                     <p class="text-lg font-semibold text-gray-900">{{ $saving->group?->name ?? 'N/A' }}</p>
                 </div>
                 <div class="py-2 border-b">
-                    <p class="text-xs text-gray-500 uppercase">Current Balance</p>
-                    <p class="text-2xl font-bold text-green-600">{{ number_format($saving->balance, 2) }}</p>
+                    <p class="text-xs text-gray-500 uppercase">Weekly Deposit Amount</p>
+                    <p class="text-2xl font-bold text-green-600">{{ number_format($saving->current_balance, 2) }}</p>
                 </div>
                 <div class="py-2 border-b">
                     <p class="text-xs text-gray-500 uppercase">Interest Rate</p>
@@ -48,8 +48,8 @@
             <h3 class="text-lg font-bold text-gray-900 mb-4">Account Summary</h3>
             <div class="space-y-4">
                 <div class="py-3 bg-green-50 rounded-lg text-center">
-                    <p class="text-xs text-gray-600 uppercase">Current Balance</p>
-                    <p class="text-2xl font-bold text-green-600">{{ number_format($saving->balance, 2) }}</p>
+                    <p class="text-xs text-gray-600 uppercase">Weekly Deposit Amount</p>
+                    <p class="text-2xl font-bold text-green-600">{{ number_format($saving->current_balance, 2) }}</p>
                 </div>
                 <div class="py-3 bg-blue-50 rounded-lg text-center">
                     <p class="text-xs text-gray-600 uppercase">Total Deposits</p>
