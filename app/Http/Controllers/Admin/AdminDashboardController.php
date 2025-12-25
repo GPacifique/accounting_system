@@ -304,7 +304,29 @@ class AdminDashboardController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Loan::create($validated);
+        // Get the group member and calculate loan details
+        $groupMember = GroupMember::findOrFail($validated['group_member_id']);
+
+        // Calculate monthly charge (principal × interest_rate ÷ 100 ÷ 12)
+        $monthlyCharge = ($validated['principal_amount'] * $validated['interest_rate']) / 100 / 12;
+        $totalCharged = $monthlyCharge * $validated['loan_term_months'];
+
+        // Create loan with proper fields
+        Loan::create([
+            'group_id' => $groupMember->group_id,
+            'member_id' => $validated['group_member_id'],
+            'principal_amount' => $validated['principal_amount'],
+            'monthly_charge' => $monthlyCharge,
+            'remaining_balance' => $validated['principal_amount'] + $totalCharged,
+            'duration_months' => $validated['loan_term_months'],
+            'months_paid' => 0,
+            'total_charged' => $totalCharged,
+            'total_principal_paid' => 0,
+            'issued_at' => now(),
+            'maturity_date' => now()->addMonths($validated['loan_term_months']),
+            'status' => $validated['status'],
+            'notes' => $validated['description'] ?? null,
+        ]);
 
         return redirect()->route('admin.loans.index')
             ->with('success', 'Loan created successfully');
