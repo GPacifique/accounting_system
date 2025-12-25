@@ -334,7 +334,7 @@
     <div class="bg-white rounded-lg shadow-sm mt-8">
         <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <h2 class="text-lg font-bold text-gray-900">Recent Transactions</h2>
-            <a href="{{ route('admin.transactions') }}" class="inline-flex items-center text-blue-500 hover:text-blue-700 text-sm font-semibold">
+            <a href="{{ route('admin.transactions.index') }}" class="inline-flex items-center text-blue-500 hover:text-blue-700 text-sm font-semibold">
                 <span>View All</span>
                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
