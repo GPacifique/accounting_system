@@ -25,6 +25,61 @@
     <!-- Main Content -->
     <div class="container mx-auto max-w-7xl px-4 py-8">
 
+    <!-- Dashboard Switcher -->
+    @if(auth()->user()->isGroupAdminOfAny() || auth()->user()->isMemberOfGroup())
+    <div class="mb-8 bg-white rounded-lg shadow p-6 border-l-4 border-indigo-500">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Switch Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- System Admin -->
+            <a href="{{ route('admin.dashboard') }}" class="block p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg border-2 border-indigo-300 hover:border-indigo-500 hover:shadow-md transition">
+                <div class="flex items-center mb-2">
+                    <span class="inline-block w-3 h-3 bg-indigo-600 rounded-full mr-2"></span>
+                    <span class="text-sm font-semibold text-indigo-900">System Admin</span>
+                </div>
+                <p class="text-xs text-indigo-700">Manage users, groups, and system settings</p>
+            </a>
+
+            <!-- Group Admin Dashboard -->
+            @if(auth()->user()->isGroupAdminOfAny())
+            <a href="{{ route('group-admin.dashboard') }}" class="block p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-300 hover:border-green-500 hover:shadow-md transition">
+                <div class="flex items-center mb-2">
+                    <span class="inline-block w-3 h-3 bg-green-600 rounded-full mr-2"></span>
+                    <span class="text-sm font-semibold text-green-900">Group Admin</span>
+                </div>
+                <p class="text-xs text-green-700">Manage group finances and members</p>
+            </a>
+            @else
+            <div class="p-4 bg-gray-50 rounded-lg border-2 border-gray-200 opacity-50 cursor-not-allowed">
+                <div class="flex items-center mb-2">
+                    <span class="inline-block w-3 h-3 bg-gray-400 rounded-full mr-2"></span>
+                    <span class="text-sm font-semibold text-gray-600">Group Admin</span>
+                </div>
+                <p class="text-xs text-gray-500">You must be an admin of a group</p>
+            </div>
+            @endif
+
+            <!-- Member Dashboard -->
+            @if(auth()->user()->isMemberOfGroup())
+            <a href="{{ route('member.dashboard') }}" class="block p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-purple-300 hover:border-purple-500 hover:shadow-md transition">
+                <div class="flex items-center mb-2">
+                    <span class="inline-block w-3 h-3 bg-purple-600 rounded-full mr-2"></span>
+                    <span class="text-sm font-semibold text-purple-900">Member</span>
+                </div>
+                <p class="text-xs text-purple-700">View your loans and savings</p>
+            </a>
+            @else
+            <div class="p-4 bg-gray-50 rounded-lg border-2 border-gray-200 opacity-50 cursor-not-allowed">
+                <div class="flex items-center mb-2">
+                    <span class="inline-block w-3 h-3 bg-gray-400 rounded-full mr-2"></span>
+                    <span class="text-sm font-semibold text-gray-600">Member</span>
+                </div>
+                <p class="text-xs text-gray-500">You must be a member of a group</p>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
+
     <!-- Statistics Cards -->
     <div class="mb-8">
         <h2 class="text-lg font-bold text-gray-900 mb-4">System Overview</h2>

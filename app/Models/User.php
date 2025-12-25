@@ -209,4 +209,37 @@ class User extends Authenticatable implements MustVerifyEmail
             })
             ->unique('id');
     }
+
+    /**
+     * Get groups where user is an admin (for group admin dashboard)
+     */
+    public function groupAdminGroups()
+    {
+        return $this->groupMembers()
+                    ->where('role', 'admin')
+                    ->where('status', 'active')
+                    ->get()
+                    ->pluck('group');
+    }
+
+    /**
+     * Check if user is member of any group
+     */
+    public function isMemberOfGroup(): bool
+    {
+        return $this->groupMembers()
+                    ->where('status', 'active')
+                    ->exists();
+    }
+
+    /**
+     * Check if user is group admin of any group
+     */
+    public function isGroupAdminOfAny(): bool
+    {
+        return $this->groupMembers()
+                    ->where('role', 'admin')
+                    ->where('status', 'active')
+                    ->exists();
+    }
 }

@@ -52,11 +52,33 @@
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>
                         </button>
-                        <div class="absolute right-0 w-48 bg-white text-gray-900 rounded-lg shadow-lg hidden group-hover:block z-50">
+                        <div class="absolute right-0 w-56 bg-white text-gray-900 rounded-lg shadow-lg hidden group-hover:block z-50">
+                            <!-- Dashboard Links -->
+                            <div class="border-b px-4 py-2 text-xs font-semibold text-gray-600 uppercase">Switch Dashboard</div>
+                            @if(auth()->user()->is_admin)
+                                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-blue-50 text-blue-600 font-medium border-b">
+                                    <span class="inline-block w-2 h-2 bg-blue-600 rounded-full mr-2"></span>System Admin
+                                </a>
+                            @endif
+                            @if(auth()->user()->groupAdminGroups()->exists())
+                                <a href="{{ route('group-admin.dashboard') }}" class="block px-4 py-2 hover:bg-green-50 text-green-600 font-medium border-b">
+                                    <span class="inline-block w-2 h-2 bg-green-600 rounded-full mr-2"></span>Group Admin
+                                </a>
+                            @endif
+                            @if(auth()->user()->isMemberOfGroup())
+                                <a href="{{ route('member.dashboard') }}" class="block px-4 py-2 hover:bg-purple-50 text-purple-600 font-medium border-b">
+                                    <span class="inline-block w-2 h-2 bg-purple-600 rounded-full mr-2"></span>Member
+                                </a>
+                            @endif
+
+                            <!-- Other Options -->
                             <a href="{{ route('admin.settings') }}" class="block px-4 py-2 hover:bg-gray-100 border-b">Settings</a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100 border-b">Profile</a>
+
+                            <!-- Logout -->
                             <form method="POST" action="{{ route('logout') }}" class="block">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-medium">Logout</button>
                             </form>
                         </div>
                     </div>
