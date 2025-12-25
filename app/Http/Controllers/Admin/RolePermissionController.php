@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\User;
+use App\Models\Group;
+use App\Models\GroupMember;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -267,5 +269,104 @@ class RolePermissionController extends Controller
         $users = $role->users()->with('user')->paginate(20);
 
         return view('admin.roles.assignments', compact('role', 'users'));
+    }
+
+    /**
+     * Show group role assignments page
+     */
+    public function groupRoleAssignments(Group $group): View
+    {
+        $members = $group->members()
+            ->with('user')
+            ->orderBy('role')
+            ->paginate(20);
+
+        $availableRoles = ['admin', 'treasurer', 'member'];
+
+        return view('admin.groups.role-assignments', compact('group', 'members', 'availableRoles'));
+    }
+
+    /**
+     * Bulk assign roles to group members
+     */
+    public function updateGroupRoleAssignments(Group $group, Request $request): RedirectResponse
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $validated = $request->validate([
+            'members' => 'array',
+            'members.*.id' => 'exists:group_members,id',
+            'members.*.role' => 'in:admin,treasurer,member',
+            'members.*.status' => 'in:active,inactive,suspended',
+        ]);
+
+        $updatedCount = 0;
+
+        if (!empty($validated['members'])) {
+            foreach ($validated['members'] as $memberData) {
+                $member = GroupMember::findOrFail($memberData['id']);
+
+                if ($member->group_id === $group->id) {
+                    $member->update([
+                        'role' => $memberData['role'],
+                        'status' => $memberData['status'],
+                    ]);
+                    $updatedCount++;
+                }
+            }
+        }
+
+        return redirect()->route('admin.groups.role-assignments', $group)
+            ->with('success', "{$updatedCount} member role(s) updated successfully");
+    }
+
+    /**
+     * Show permission matrix for group members
+     */
+    public function groupPermissionMatrix(Group $group): View
+    {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $members = $group->members()->with('user')->get();
+
+        // Define permission matrix by role
+        $permissionMatrix = [
+            'admin' => [
+                'manage_members' => true,
+                'manage_finances' => true,
+                'approve_loans' => true,
+                'approve_savings' => true,
+                'view_reports' => true,
+                'edit_group' => true,
+                'manage_roles' => true,
+                'audit_logs' => true,
+            ],
+            'treasurer' => [
+                'manage_members' => false,
+                'manage_finances' => true,
+                'approve_loans' => true,
+                'approve_savings' => true,
+                'view_reports' => true,
+                'edit_group' => false,
+                'manage_roles' => false,
+                'audit_logs' => true,
+            ],
+            'member' => [
+                'manage_members' => false,
+                'manage_finances' => false,
+                'approve_loans' => false,
+                'approve_savings' => false,
+                'view_reports' => false,
+                'edit_group' => false,
+                'manage_roles' => false,
+                'audit_logs' => false,
+            ],
+        ];
+
+        return view('admin.groups.permission-matrix', compact('group', 'members', 'permissionMatrix'));
     }
 }
