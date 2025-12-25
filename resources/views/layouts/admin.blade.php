@@ -46,8 +46,8 @@
                 <!-- User Menu -->
                 <div class="flex items-center space-x-4">
                     <div class="relative group">
-                        <button class="flex items-center space-x-2 hover:text-blue-300 transition">
-                            <span>{{ auth()->user()->name }}</span>
+                        <button class="flex items-center space-x-2 hover:text-green-200 transition text-white">
+                            <span class="font-medium">{{ auth()->user()->name }}</span>
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>
@@ -72,13 +72,13 @@
                             @endif
 
                             <!-- Other Options -->
-                            <a href="{{ route('admin.settings') }}" class="block px-4 py-2 hover:bg-gray-100 border-b">Settings</a>
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100 border-b">Profile</a>
+                            <a href="{{ route('admin.settings') }}" class="block px-4 py-2 hover:bg-gray-100 text-gray-700 border-b">Settings</a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100 text-gray-700 border-b">Profile</a>
 
                             <!-- Logout -->
                             <form method="POST" action="{{ route('logout') }}" class="block">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-medium">Logout</button>
+                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600 font-semibold transition">Logout</button>
                             </form>
                         </div>
                     </div>
