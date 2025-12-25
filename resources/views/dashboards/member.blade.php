@@ -26,7 +26,7 @@
             <h2 class="text-xl font-bold text-gray-900 mb-4">My Groups</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @forelse($groups as $group)
-                    <div class="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer" onclick="window.location.href='{{ route('groups.show', $group) }}'">
+                    <div class="border rounded-lg p-4 hover:shadow-lg transition">
                         <h3 class="font-semibold text-gray-900">{{ $group->name }}</h3>
                         <p class="text-sm text-gray-600 mt-1">{{ $group->groupMembers->count() }} members</p>
                         <div class="mt-3 pt-3 border-t">
