@@ -1,91 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <!-- White background for app icon -->
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
   <rect width="200" height="200" fill="white" rx="40"/>
 
-  <!-- Subtle shadow/depth -->
-  <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f8fafb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
-    </linearGradient>
+  <!-- Three interconnected circles (community) -->
+  <circle cx="70" cy="85" r="16" fill="#1e5a3f"/>
+  <circle cx="130" cy="85" r="16" fill="#0f4c2f"/>
+  <circle cx="100" cy="50" r="16" fill="#2a7c4e"/>
 
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
-    </filter>
-  </defs>
+  <!-- Connection lines (bonds/trust) -->
+  <line x1="85" y1="75" x2="85" y2="95" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
+  <line x1="115" y1="75" x2="115" y2="95" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
+  <line x1="75" y1="85" x2="125" y2="85" stroke="#d4af37" stroke-width="2" stroke-linecap="round"/>
 
-  <rect width="200" height="200" fill="url(#bgGradient)" rx="40"/>
+  <!-- Arrow (growth) -->
+  <rect x="97" y="70" width="6" height="18" fill="#d4af37" rx="1"/>
+  <polygon points="100,65 95,73 105,73" fill="#d4af37"/>
 
-  <!-- Main Logo Container -->
-  <g id="main-logo" transform="translate(100, 85)">
+  <!-- Accent dots -->
+  <circle cx="60" cy="108" r="1.5" fill="#d4af37" opacity="0.6"/>
+  <circle cx="100" cy="115" r="1.5" fill="#d4af37" opacity="0.6"/>
+  <circle cx="140" cy="108" r="1.5" fill="#d4af37" opacity="0.6"/>
 
-    <!-- Three interconnected circles (community/group) -->
-    <!-- Left circle -->
-    <circle cx="-22" cy="8" r="16" fill="#1e5a3f" opacity="0.95" filter="url(#shadow)"/>
-
-    <!-- Right circle -->
-    <circle cx="22" cy="8" r="16" fill="#0f4c2f" opacity="0.95" filter="url(#shadow)"/>
-
-    <!-- Top circle -->
-    <circle cx="0" cy="-18" r="16" fill="#2a7c4e" opacity="0.95" filter="url(#shadow)"/>
-
-    <!-- Connection lines (financial bonds) -->
-    <g stroke="#d4af37" stroke-width="2" opacity="0.85" stroke-linecap="round">
-      <line x1="-8" y1="-8" x2="-8" y2="8"/>
-      <line x1="8" y1="-8" x2="8" y2="8"/>
-      <line x1="-15" y1="0" x2="15" y2="0"/>
-    </g>
-
-    <!-- Central upward arrow (growth & prosperity) -->
-    <g id="arrow" transform="translate(0, 0)">
-      <!-- Arrow body -->
-      <rect x="-2.5" y="-8" width="5" height="18" fill="#d4af37" opacity="0.95" rx="1"/>
-
-      <!-- Arrow head -->
-      <polygon points="0,-10 -5,-2 5,-2" fill="#d4af37" opacity="0.95"/>
-
-      <!-- Arrow highlight -->
-      <rect x="-1.5" y="-6" width="3" height="12" fill="#ffffff" opacity="0.3" rx="1"/>
-    </g>
-
-    <!-- Trust indicator (subtle shield behind) -->
-    <path d="M -5,-20 L 5,-20 L 8,-12 L 8,-2 Q 0,4 0,4 Q 0,4 -8,-2 L -8,-12 Z"
-          fill="none"
-          stroke="#d4af37"
-          stroke-width="1"
-          opacity="0.3"
-          stroke-linecap="round"/>
-
-    <!-- Accent dots for stability -->
-    <circle cx="-15" cy="18" r="1.5" fill="#d4af37" opacity="0.6"/>
-    <circle cx="0" cy="22" r="1.5" fill="#d4af37" opacity="0.6"/>
-    <circle cx="15" cy="18" r="1.5" fill="#d4af37" opacity="0.6"/>
-  </g>
-
-  <!-- Brand Typography -->
-  <text x="100" y="152"
-        font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
-        font-size="26"
-        font-weight="700"
-        text-anchor="middle"
-        fill="#0f4c2f"
-        letter-spacing="0.3">
-    isubyo
-  </text>
-
-  <!-- Slogan (optional, subtle) -->
-  <text x="100" y="168"
-        font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
-        font-size="7"
-        font-weight="500"
-        text-anchor="middle"
-        fill="#2a7c4e"
-        opacity="0.5"
-        letter-spacing="0.5">
-    THE FUTURE STARTS NOW
-  </text>
-
-  <!-- Accent line -->
-  <line x1="55" y1="175" x2="145" y2="175" stroke="#d4af37" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+  <!-- Brand name -->
+  <text x="100" y="155" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" text-anchor="middle" fill="#0f4c2f">isubyo</text>
 </svg>
