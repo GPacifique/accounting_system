@@ -33,68 +33,76 @@
         <h2 class="text-lg font-bold text-gray-900 mb-4">System Overview</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Users Stat -->
-            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-blue-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Users</p>
-                        <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['total_users'] }}</p>
-                        <p class="text-gray-500 text-xs mt-2">Registered in system</p>
-                    </div>
-                    <div class="bg-blue-50 rounded-lg p-3">
-                        <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-                        </svg>
+            <a href="{{ route('admin.users.index') }}" class="group block">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-blue-500 cursor-pointer h-full">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Users</p>
+                            <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['total_users'] }}</p>
+                            <p class="text-gray-500 text-xs mt-2">Registered in system</p>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Groups Stat -->
-            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-green-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Groups</p>
-                        <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['total_groups'] }}</p>
-                        <p class="text-gray-500 text-xs mt-2">Active: {{ $stats['active_groups'] ?? 0 }}</p>
-                    </div>
-                    <div class="bg-green-50 rounded-lg p-3">
-                        <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M5 3a2 2 0 00-2 2v6h6V5a2 2 0 00-2-2H5zm6 0a2 2 0 00-2 2v6h6V5a2 2 0 00-2-2h-2zm0 10a2 2 0 00-2 2v2h2v-2zm-6 2a2 2 0 00-2 2v2h6v-2a2 2 0 00-2-2H5z"></path>
-                        </svg>
+            <a href="{{ route('admin.groups.index') }}" class="group block">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-green-500 cursor-pointer h-full">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Groups</p>
+                            <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['total_groups'] }}</p>
+                            <p class="text-gray-500 text-xs mt-2">Active: {{ $stats['active_groups'] ?? 0 }}</p>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M5 3a2 2 0 00-2 2v6h6V5a2 2 0 00-2-2H5zm6 0a2 2 0 00-2 2v6h6V5a2 2 0 00-2-2h-2zm0 10a2 2 0 00-2 2v2h2v-2zm-6 2a2 2 0 00-2 2v2h6v-2a2 2 0 00-2-2H5z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Loans Stat -->
-            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-purple-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Active Loans</p>
-                        <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['active_loans'] }}</p>
-                        <p class="text-gray-500 text-xs mt-2">Of {{ $stats['total_loans'] }} total</p>
-                    </div>
-                    <div class="bg-purple-50 rounded-lg p-3">
-                        <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path>
-                        </svg>
+            <a href="{{ route('admin.loans.index') }}" class="group block">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-purple-500 cursor-pointer h-full">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Active Loans</p>
+                            <p class="text-4xl font-bold text-gray-900 mt-2">{{ $stats['active_loans'] }}</p>
+                            <p class="text-gray-500 text-xs mt-2">Of {{ $stats['total_loans'] }} total</p>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Savings Stat -->
-            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-yellow-500">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Savings Balance</p>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_savings'] ?? 0, 2) }}</p>
-                        <p class="text-gray-500 text-xs mt-2">Across all groups</p>
-                    </div>
-                    <div class="bg-yellow-50 rounded-lg p-3">
-                        <svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M5 5a2 2 0 012-2h6a2 2 0 012 2v9h2a1 1 0 110 2h-2v2a2 2 0 01-2 2H7a2 2 0 01-2-2v-2H3a1 1 0 110-2h2V5zm8 1v7H7V6h6z"></path>
-                        </svg>
+            <a href="{{ route('admin.savings.index') }}" class="group block">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 border-l-4 border-yellow-500 cursor-pointer h-full">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Total Savings Balance</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($stats['total_savings'] ?? 0, 2) }}</p>
+                            <p class="text-gray-500 text-xs mt-2">Across all groups</p>
+                        </div>
+                        <div class="bg-yellow-50 rounded-lg p-3">
+                            <svg class="w-8 h-8 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M5 5a2 2 0 012-2h6a2 2 0 012 2v9h2a1 1 0 110 2h-2v2a2 2 0 01-2 2H7a2 2 0 01-2-2v-2H3a1 1 0 110-2h2V5zm8 1v7H7V6h6z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -125,7 +133,7 @@
                         </thead>
                         <tbody>
                             @forelse($recent_users as $user)
-                                <tr class="border-b hover:bg-gray-50 transition">
+                                <tr class="border-b hover:bg-gray-50 transition cursor-pointer" onclick="window.location='{{ route('admin.users.edit', $user) }}'">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -144,7 +152,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user->created_at->format('M d, Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-500 hover:text-blue-700 font-semibold">Edit</a>
+                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-500 hover:text-blue-700 font-semibold" onclick="event.stopPropagation()">Edit</a>
                                     </td>
                                 </tr>
                             @empty
@@ -179,7 +187,7 @@
                         </thead>
                         <tbody>
                             @forelse($recent_groups as $group)
-                                <tr class="border-b hover:bg-gray-50 transition">
+                                <tr class="border-b hover:bg-gray-50 transition cursor-pointer" onclick="window.location='{{ route('admin.groups.show', $group) }}'">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <p class="text-sm font-semibold text-gray-900">{{ $group->name }}</p>
                                     </td>
@@ -193,7 +201,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        <a href="{{ route('admin.groups.show', $group) }}" class="text-blue-500 hover:text-blue-700 font-semibold">View</a>
+                                        <a href="{{ route('admin.groups.show', $group) }}" class="text-blue-500 hover:text-blue-700 font-semibold" onclick="event.stopPropagation()">View</a>
                                     </td>
                                 </tr>
                             @empty

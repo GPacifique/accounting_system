@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') - Ihango</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>@yield('title', 'Admin Dashboard') - isubyo</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-100">
     <!-- Navigation -->
@@ -13,9 +22,9 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex items-center space-x-4">
-                    <img src="{{ asset('images/ihango-logo.svg') }}" alt="Ihango Logo" class="h-12 w-12">
+                    <img src="{{ asset('images/isubyo-logo-modern.svg') }}" alt="isubyo Logo" class="h-12 w-12">
                     <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold text-green-100">
-                        Ihango Admin
+                        isubyo Admin
                     </a>
                 </div>
 
@@ -42,6 +51,45 @@
                     <a href="{{ route('admin.reports') }}" class="hover:text-green-200 transition font-medium {{ request()->routeIs('admin.reports') ? 'text-green-200 border-b-2 border-green-200' : '' }}">
                         Reports
                     </a>
+                    <a href="{{ route('admin.chats.index') }}" class="hover:text-green-200 transition font-medium {{ request()->routeIs('admin.chats.*') ? 'text-green-200 border-b-2 border-green-200' : '' }}">
+                        Chat
+                    </a>
+
+                    <!-- View Switcher for Admin-Group Admins -->
+                    @php
+                        $isGroupAdmin = auth()->user() && auth()->check() &&
+                            \App\Models\GroupMember::where('user_id', auth()->id())
+                                ->where('role', 'admin')
+                                ->where('status', 'active')
+                                ->exists();
+                    @endphp
+
+                    @if(auth()->user()->is_admin && $isGroupAdmin)
+                        <div class="border-l border-green-500 pl-6 ml-6">
+                            <a href="{{ route('group-admin.dashboard') }}" class="hover:text-green-200 transition font-medium text-sm">
+                                🏢 Group Admin
+                            </a>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Search Box -->
+                <div class="hidden md:flex md:items-center md:flex-1 md:max-w-xs md:mx-4">
+                    <form method="GET" action="#" class="w-full">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="q"
+                                placeholder="Search..."
+                                class="w-full px-3 py-2 text-sm text-gray-900 placeholder-gray-400 rounded-lg bg-green-50 focus:ring-2 focus:ring-green-300 focus:border-transparent outline-none"
+                            />
+                            <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- User Menu -->
@@ -106,9 +154,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white text-center py-6 mt-12">
-        <p>&copy; {{ date('Y') }} Ihango. All rights reserved. | Admin Dashboard v1.0</p>
-    </footer>
+    @include('components.footer')
 
     <!-- User Menu Toggle Script -->
     <script>

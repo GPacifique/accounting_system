@@ -22,7 +22,7 @@
 
             <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
                 <h3 class="font-bold text-gray-900 mb-2">System Version</h3>
-                <p class="text-gray-700">Ihango v1.0</p>
+                <p class="text-gray-700">isubyo v1.0</p>
             </div>
 
             <div class="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">

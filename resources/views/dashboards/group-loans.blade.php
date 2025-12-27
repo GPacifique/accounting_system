@@ -23,6 +23,30 @@
             </a>
         </div>
 
+        <!-- Search Box -->
+        <div class="mb-6">
+            <form method="GET" class="flex gap-2">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search by member name or email..."
+                    class="flex-1 px-4 py-2 text-sm text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+                <button
+                    type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                >
+                    Search
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('group-admin.loans', $group) }}" class="px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg hover:bg-gray-500 transition">
+                        Clear
+                    </a>
+                @endif
+            </form>
+        </div>
+
         <!-- Loans Table -->
         <div class="bg-white rounded-lg shadow-sm">
             <div class="px-6 py-4 border-b border-gray-200">

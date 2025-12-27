@@ -7,6 +7,10 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -20,13 +24,16 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div class="flex flex-col items-center">
-                <img src="{{ asset('images/ihango-logo.svg') }}" alt="Ihango Logo" class="w-20 h-20 mb-4">
-                <a href="/" class="text-2xl font-bold text-gray-900">Ihango</a>
+                <img src="{{ asset('images/isubyo-logo-modern.svg') }}" alt="isubyo Logo" class="w-20 h-20 mb-4">
+                <a href="/" class="text-2xl font-bold text-gray-900">isubyo</a>
             </div>
 
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>
+
+        <!-- Footer -->
+        @include('components.footer')
     </body>
 </html>

@@ -1,0 +1,62 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" fill="white"/>
+  
+  <!-- Main Logo Symbol -->
+  <g id="logo-symbol">
+    <!-- Interconnected circles representing community & unity -->
+    <!-- Circle 1 (left-bottom) -->
+    <circle cx="60" cy="95" r="18" fill="#1e5a3f" opacity="0.9"/>
+    
+    <!-- Circle 2 (right-bottom) -->
+    <circle cx="120" cy="95" r="18" fill="#0f4c2f" opacity="0.9"/>
+    
+    <!-- Circle 3 (top-center) -->
+    <circle cx="90" cy="55" r="18" fill="#2a7c4e" opacity="0.9"/>
+    
+    <!-- Connecting lines (financial connection) -->
+    <line x1="72" y1="80" x2="108" y2="70" stroke="#d4af37" stroke-width="2.5" opacity="0.8"/>
+    <line x1="108" y1="80" x2="72" y2="80" stroke="#d4af37" stroke-width="2.5" opacity="0.8"/>
+    
+    <!-- Upward arrow (growth) centered in the middle -->
+    <g id="growth-arrow" transform="translate(90, 75)">
+      <!-- Arrow shaft -->
+      <rect x="-3" y="-15" width="6" height="25" fill="#d4af37" opacity="0.9"/>
+      
+      <!-- Arrow head (triangle) -->
+      <polygon points="0,-18 -6,-8 6,-8" fill="#d4af37" opacity="0.9"/>
+      
+      <!-- Arrow accent line -->
+      <line x1="-8" y1="-5" x2="8" y2="-5" stroke="#2a7c4e" stroke-width="1.5" opacity="0.6"/>
+    </g>
+    
+    <!-- Shield outline for trust & security (subtle background) -->
+    <path d="M 90 40 L 105 50 L 105 75 Q 90 85 90 85 Q 75 75 75 50 Z" 
+          fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.3"/>
+  </g>
+  
+  <!-- Brand Name -->
+  <text x="100" y="130" 
+        font-family="Arial, sans-serif" 
+        font-size="28" 
+        font-weight="bold" 
+        text-anchor="middle" 
+        fill="#0f4c2f"
+        letter-spacing="0.5">
+    isubyo
+  </text>
+  
+  <!-- Optional Slogan (subtle) -->
+  <text x="100" y="150" 
+        font-family="Arial, sans-serif" 
+        font-size="8" 
+        text-anchor="middle" 
+        fill="#2a7c4e" 
+        opacity="0.6"
+        letter-spacing="0.3">
+    The future starts now
+  </text>
+  
+  <!-- Decorative accent line -->
+  <line x1="45" y1="165" x2="155" y2="165" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+</svg>

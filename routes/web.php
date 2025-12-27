@@ -4,10 +4,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupAdminDashboardController;
 use App\Http\Controllers\MemberDashboardController;
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Chat Routes (accessible to all, with middleware on specific actions)
+Route::prefix('chat')->name('chat.')->group(function () {
+    Route::get('/', [ChatController::class, 'show'])->middleware(['auth', 'verified'])->name('show');
+    Route::post('/start', [ChatController::class, 'start'])->middleware(['auth', 'verified'])->name('start');
+    Route::get('{chat}/window', [ChatController::class, 'window'])->middleware(['auth', 'verified'])->name('window');
+    Route::post('{chat}/message', [ChatController::class, 'sendMessage'])->middleware(['auth', 'verified'])->name('send-message');
+    Route::get('{chat}/messages', [ChatController::class, 'getMessages'])->middleware(['auth', 'verified'])->name('get-messages');
+    Route::post('{chat}/close', [ChatController::class, 'close'])->middleware(['auth', 'verified'])->name('close');
 });
 
 // RBAC-based dashboard redirect

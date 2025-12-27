@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\ChatController;
 use App\Http\Middleware\AdminMiddleware;
 
 // Admin routes - only for system admins
@@ -115,5 +116,14 @@ Route::middleware(['auth', 'verified', AdminMiddleware::class])->prefix('admin')
         Route::get('/{user}/edit', [RolePermissionController::class, 'editUserRoles'])->name('edit');
         Route::put('/{user}', [RolePermissionController::class, 'updateUserRoles'])->name('update');
         Route::delete('/{user}/{role}', [RolePermissionController::class, 'revokeUserRole'])->name('revoke');
+    });
+
+    // Chat Management
+    Route::prefix('chats')->name('chats.')->group(function () {
+        Route::get('/', [ChatController::class, 'adminList'])->name('index');
+        Route::get('/{chat}', [ChatController::class, 'adminView'])->name('show');
+        Route::post('/{chat}/reply', [ChatController::class, 'adminReply'])->name('reply');
+        Route::post('/{chat}/status', [ChatController::class, 'updateStatus'])->name('update-status');
+        Route::put('/{chat}/status', [ChatController::class, 'updateStatus']);
     });
 });

@@ -121,9 +121,18 @@ class GroupAdminDashboardController extends Controller
     {
         $this->authorizeGroupAdmin($group);
 
-        $loans = $group->loans()
-            ->with('member')
-            ->paginate(15);
+        $query = $group->loans()->with('member');
+
+        // Search functionality
+        if (request('search')) {
+            $search = request('search');
+            $query->whereHas('member.user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $loans = $query->paginate(15);
 
         return view('dashboards.group-loans', compact('group', 'loans'));
     }
@@ -135,9 +144,18 @@ class GroupAdminDashboardController extends Controller
     {
         $this->authorizeGroupAdmin($group);
 
-        $savings = $group->savings()
-            ->with('member')
-            ->paginate(15);
+        $query = $group->savings()->with('member');
+
+        // Search functionality
+        if (request('search')) {
+            $search = request('search');
+            $query->whereHas('member.user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $savings = $query->paginate(15);
 
         return view('dashboards.group-savings', compact('group', 'savings'));
     }
@@ -149,9 +167,18 @@ class GroupAdminDashboardController extends Controller
     {
         $this->authorizeGroupAdmin($group);
 
-        $members = $group->members()
-            ->with('user')
-            ->paginate(15);
+        $query = $group->members()->with('user');
+
+        // Search functionality
+        if (request('search')) {
+            $search = request('search');
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $members = $query->paginate(15);
 
         return view('dashboards.group-members', compact('group', 'members'));
     }
@@ -163,10 +190,22 @@ class GroupAdminDashboardController extends Controller
     {
         $this->authorizeGroupAdmin($group);
 
-        $transactions = Transaction::where('group_id', $group->id)
-            ->with('user', 'group')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $query = Transaction::where('group_id', $group->id)
+            ->with('createdByUser', 'group', 'member');
+
+        // Search functionality
+        if (request('search')) {
+            $search = request('search');
+            $query->whereHas('member.user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->orWhere('type', 'like', "%{$search}%")
+            ->orWhere('description', 'like', "%{$search}%")
+            ->orWhere('reference', 'like', "%{$search}%");
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(20);
 
         return view('dashboards.group-transactions', compact('group', 'transactions'));
     }

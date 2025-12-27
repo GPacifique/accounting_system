@@ -37,6 +37,11 @@ class Transaction extends Model
         return $this->belongsTo(GroupMember::class, 'member_id');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
